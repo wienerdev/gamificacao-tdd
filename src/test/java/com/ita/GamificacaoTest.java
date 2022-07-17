@@ -30,9 +30,9 @@ public class GamificacaoTest {
     public void setup() {
         pontuacao = new Pontuacao();
         listaPontos = new ArrayList<>();
-        
+
         listaDeUsuarios = new ArrayList<>();
-    
+
         pontuacao.setPontosTipoEstrela(10);
         pontuacao.setPontosTipoMoeda(5);
         listaPontos.add(pontuacao);
@@ -44,9 +44,8 @@ public class GamificacaoTest {
         listaDeUsuarios.add(usuario2);
 
         armazenamentoTeste = new GamificacaoService(listaDeUsuarios);
+    }
 
-    } 
-   
     @Test
     public void testReceberPontosTipoEstrela() {
         assertEquals(

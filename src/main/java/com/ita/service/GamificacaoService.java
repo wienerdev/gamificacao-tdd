@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ita.models.EnumTipoPonto;
 import com.ita.models.Usuario;
+import com.ita.validate.GamificacaoValidate;
 
 public class GamificacaoService {
+
+    GamificacaoValidate validate = new GamificacaoValidate();
 
     List<Usuario> listaDeUsuarios;
 
@@ -24,16 +28,16 @@ public class GamificacaoService {
     }
 
     public String receberPontos(String nomeUsuario, Integer quantidadePontos, String tipoPontos) {
-        validarTipoPontos(tipoPontos);
-        validarUsuario(nomeUsuario);
+        validate.validar(nomeUsuario, listaDeUsuarios, tipoPontos);
 
         Optional<Usuario> usuario = retornarUsuario(nomeUsuario);
         usuario.get().getListaPontos().forEach(pontos -> {
-            if (tipoPontos == "estrela") {
-                pontos.setPontosTipoEstrela(quantidadePontos);
+            if (EnumTipoPonto.ESTRELA.name().equalsIgnoreCase(tipoPontos)) {
+                pontos.setQuantidade(quantidadePontos);
+                /* pontos.setPontosTipoEstrela(quantidadePontos); */
             }
-            if (tipoPontos == "moeda") {
-                pontos.setPontosTipoMoeda(quantidadePontos);
+            if (EnumTipoPonto.MOEDA.name().equalsIgnoreCase(tipoPontos)) {
+                /* pontos.setPontosTipoMoeda(quantidadePontos); */
             }
         });
 
@@ -41,8 +45,8 @@ public class GamificacaoService {
     }
 
     public String recuperarPontos(String nomeUsuario, String tipoPontos) {
-        validarTipoPontos(tipoPontos);
-        validarUsuario(nomeUsuario);
+        validate.validar(nomeUsuario, listaDeUsuarios, tipoPontos);
+
 
         Optional<Usuario> usuario = retornarUsuario(nomeUsuario);
         if (tipoPontos == "estrela") {
@@ -74,7 +78,7 @@ public class GamificacaoService {
     }
 
     public String recuperarTodosPontosRegistradosPorUsuario(String nomeUsuario) {
-        validarUsuario(nomeUsuario);
+        validate.validarUsuario(nomeUsuario, listaDeUsuarios);
 
         Optional<Usuario> usuario = retornarUsuario(nomeUsuario);
 
@@ -92,7 +96,7 @@ public class GamificacaoService {
     }
 
     public String recuperarRankingTipoPontos(String tipoPontos) {
-        validarTipoPontos(tipoPontos);
+        validate.validarTipoPontos(tipoPontos);
 
         List<String> listaUsuariosPontoEstrela = new ArrayList<>();
         List<String> listaUsuariosPontoMoeda = new ArrayList<>();
@@ -121,27 +125,6 @@ public class GamificacaoService {
     public boolean isUsuarioPossuiPontos(Usuario usuario) {
         return usuario.getListaPontos().stream()
                 .anyMatch(pontos -> pontos.getPontosTipoEstrela() > 0 || pontos.getPontosTipoMoeda() > 0);
-    }
-
-    private void validarTipoPontos(String tipoPontos) {
-        if (isTipoPontoValido(tipoPontos)) {
-            throw new RuntimeException("Tipo de ponto inválido!");
-        }
-    }
-
-    private void validarUsuario(String nomeUsuario) {
-        if (!isUsuarioExistente(listaDeUsuarios, nomeUsuario)) {
-            throw new RuntimeException("Usuário não encontrado!");
-        }
-    }
-
-    private boolean isTipoPontoValido(String tipoPontos) {
-        return tipoPontos != "moeda" && tipoPontos != "estrela";
-    }
-
-    private boolean isUsuarioExistente(List<Usuario> listaUsuario, String nomeUsuario) {
-        return listaUsuario.stream().filter(usuario -> usuario.getNomeUsuario().equals(nomeUsuario)).findFirst()
-                .isPresent();
     }
 
     private Optional<Usuario> retornarUsuario(String nomeUsuario) {

@@ -1,26 +1,32 @@
 package com.ita.models;
-
 public class Pontuacao {
 
-    private int pontosTipoEstrela;
-    private int pontosTipoMoeda;
+    private int quantidade;
+    private EnumTipoPonto tipo;
 
-    public int getPontosTipoMoeda() {
-        return pontosTipoMoeda;
+    public Pontuacao(int quantidade, EnumTipoPonto tipo) {
+        this.quantidade = quantidade;
+        this.tipo = tipo;
     }
 
-    public void setPontosTipoMoeda(int pontosTipoMoeda) {
-        this.pontosTipoMoeda += pontosTipoMoeda;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public int getPontosTipoEstrela() {
-        return pontosTipoEstrela;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public void setPontosTipoEstrela(int pontosTipoEstrela) {
-        this.pontosTipoEstrela += pontosTipoEstrela;
+    public EnumTipoPonto getTipo() {
+        return tipo;
     }
 
+    public void setTipo(EnumTipoPonto tipo) {
+        this.tipo = tipo;
+    }
     
-    
+    public Pontuacao add(int quantidade) {
+        this.quantidade += quantidade;
+        return this;
+    }
 }
